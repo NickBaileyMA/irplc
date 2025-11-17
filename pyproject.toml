@@ -37,10 +37,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/NickBaileyMA/ir-pw-limited-client"
-Documentation = "https://github.com/NickBaileyMA/ir-pw-limited-client#readme"
-Repository = "https://github.com/NickBaileyMA/ir-pw-limited-client"
-Issues = "https://github.com/NickBaileyMA/ir-pw-limited-client/issues"
+Homepage = "https://github.com/NickBaileyMA/irplc"
+Documentation = "https://github.com/NickBaileyMA/irplc#readme"
+Repository = "https://github.com/NickBaileyMA/irplc"
+Issues = "https://github.com/NickBaileyMA/irplc/issues"
 
 [tool.setuptools]
 packages = ["iracing_oauth_client"]

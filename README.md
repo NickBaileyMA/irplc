@@ -12,8 +12,8 @@ There are no plans to expand this repo to include Authorization Code Flow.
 ### From Source
 
 ```bash
-git clone https://github.com/NickBaileyMA/ir-pw-limited-client.git
-cd ir-pw-limited-client
+git clone https://github.com/NickBaileyMA/irplc.git
+cd irplc
 pip install -e .
 ```
 
