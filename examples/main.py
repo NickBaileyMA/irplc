@@ -10,12 +10,12 @@ from iracing_oauth_client import IRacingOAuthClient, Config
 from data_api import IRacingDataAPI
 
 
-def fetch_member_info(data_api: IRacingDataAPI) -> None:
+def fetch_member_info(data_api: IRacingDataAPI) -> Any:
     """Fetch and display member information."""
     print("\n" + "="*50)
     print("FETCHING MEMBER INFORMATION")
     print("="*50)
-    
+
     member_info = data_api.get_member_info(cust_ids=[57575])
     if member_info:
         print(f"✅ Successfully retrieved member information")
@@ -32,14 +32,15 @@ def fetch_member_info(data_api: IRacingDataAPI) -> None:
             print(f"   Raw response: {json.dumps(member_info, indent=2)}")
     else:
         print("❌ Failed to retrieve member information")
+    return member_info
 
 
-def fetch_series_list(data_api: IRacingDataAPI) -> None:
+def fetch_series_list(data_api: IRacingDataAPI) -> Any:
     """Fetch and display series list."""
     print("\n" + "="*50)
     print("FETCHING SERIES LIST")
     print("="*50)
-    
+
     series_list = data_api.get_series_list()
     if series_list:
         # Handle both direct list response and wrapped response
@@ -50,25 +51,26 @@ def fetch_series_list(data_api: IRacingDataAPI) -> None:
             # Extract data from dict response, ensure it's a list
             extracted_data = series_list.get('data', series_list)
             series_data = extracted_data if isinstance(extracted_data, list) else []
-            
+
         print(f"✅ Successfully retrieved {len(series_data)} series")
-        
+
         # Show first few series as examples
         for i, series in enumerate(cast(List[Dict[str, Any]], series_data)[:3]):
             print(f"   {i+1}. {series.get('series_name', 'Unknown')} (ID: {series.get('series_id', 'N/A')})")
-        
+
         if len(series_data) > 3:
             print(f"   ... and {len(series_data) - 3} more series")
     else:
         print("❌ Failed to retrieve series list")
+    return series_list
 
 
-def fetch_cars_list(data_api: IRacingDataAPI) -> None:
+def fetch_cars_list(data_api: IRacingDataAPI) -> Any:
     """Fetch and display cars list."""
     print("\n" + "="*50)
     print("FETCHING CARS LIST")
     print("="*50)
-    
+
     cars_list = data_api.get_cars_list()
     if cars_list:
         # Handle both direct list response and wrapped response
@@ -79,25 +81,26 @@ def fetch_cars_list(data_api: IRacingDataAPI) -> None:
             # Extract data from dict response, ensure it's a list
             extracted_data = cars_list.get('data', cars_list)
             cars_data = extracted_data if isinstance(extracted_data, list) else []
-            
+
         print(f"✅ Successfully retrieved {len(cars_data)} cars")
-        
+
         # Show first few cars as examples
         for i, car in enumerate(cast(List[Dict[str, Any]], cars_data)[:3]):
             print(f"   {i+1}. {car.get('car_name', 'Unknown')} (ID: {car.get('car_id', 'N/A')})")
-        
+
         if len(cars_data) > 3:
             print(f"   ... and {len(cars_data) - 3} more cars")
     else:
         print("❌ Failed to retrieve cars list")
+    return cars_list
 
 
-def fetch_tracks_list(data_api: IRacingDataAPI) -> None:
+def fetch_tracks_list(data_api: IRacingDataAPI) -> Any:
     """Fetch and display tracks list."""
     print("\n" + "="*50)
     print("FETCHING TRACKS LIST")
     print("="*50)
-    
+
     tracks_list = data_api.get_tracks_list()
     if tracks_list:
         # Handle both direct list response and wrapped response
@@ -108,37 +111,99 @@ def fetch_tracks_list(data_api: IRacingDataAPI) -> None:
             # Extract data from dict response, ensure it's a list
             extracted_data = tracks_list.get('data', tracks_list)
             tracks_data = extracted_data if isinstance(extracted_data, list) else []
-            
+
         print(f"✅ Successfully retrieved {len(tracks_data)} tracks")
-        
+
         # Show first few tracks as examples
         for i, track in enumerate(cast(List[Dict[str, Any]], tracks_data)[:3]):
             print(f"   {i+1}. {track.get('track_name', 'Unknown')} (ID: {track.get('track_id', 'N/A')})")
-        
+
         if len(tracks_data) > 3:
             print(f"   ... and {len(tracks_data) - 3} more tracks")
     else:
         print("❌ Failed to retrieve tracks list")
+    return tracks_list
 
 
-def run_api_calls(data_api: IRacingDataAPI, iteration: int = 0) -> None:
+def fetch_flairs_list(data_api: IRacingDataAPI) -> Any:
+    """Fetch and display flairs list."""
+    print("\n" + "="*50)
+    print("FETCHING FLAIRS LIST")
+    print("="*50)
+
+    flairs_list = data_api.get_flairs_list()
+    if flairs_list:
+        # Handle both direct list response and wrapped response
+        flairs_data: List[Dict[str, Any]]
+        if isinstance(flairs_list, list):
+            flairs_data = flairs_list
+        else:
+            # Extract data from dict response, ensure it's a list
+            extracted_data = flairs_list.get('data', flairs_list)
+            flairs_data = extracted_data if isinstance(extracted_data, list) else []
+
+        print(f"✅ Successfully retrieved {len(flairs_data)} flairs")
+
+        # Show first few flairs as examples
+        for i, flair in enumerate(cast(List[Dict[str, Any]], flairs_data)[:3]):
+            print(f"   {i+1}. {flair.get('name', 'Unknown')} - {flair.get('shortname', 'N/A')}")
+
+        if len(flairs_data) > 3:
+            print(f"   ... and {len(flairs_data) - 3} more flairs")
+    else:
+        print("❌ Failed to retrieve flairs list")
+    return flairs_list
+
+
+def dump_to_json(data: Any, filename: str) -> None:
+    """Dump data to a JSON file.
+
+    Args:
+        data: Data to dump to JSON
+        filename: Name of the file to write to
+    """
+    try:
+        with open(filename, 'w') as f:
+            json.dump(data, f, indent=2)
+        print(f"   📄 Dumped to {filename}")
+    except Exception as e:
+        print(f"   ❌ Failed to dump to {filename}: {e}")
+
+
+def run_api_calls(data_api: IRacingDataAPI, iteration: int = 0, dump: bool = False) -> None:
     """
     Execute all API calls.
-    
+
     Args:
         data_api: Authenticated IRacingDataAPI instance
         iteration: Current iteration number (for display purposes)
+        dump: Whether to dump each endpoint's data to a JSON file
     """
     if iteration > 0:
         print(f"\n{'='*50}")
         print(f"ITERATION {iteration}")
         print(f"{'='*50}")
-    
+
     try:
-        fetch_member_info(data_api)
-        fetch_series_list(data_api)
-        fetch_cars_list(data_api)
-        fetch_tracks_list(data_api)
+        member_info = fetch_member_info(data_api)
+        if dump and member_info:
+            dump_to_json(member_info, 'member_info.json')
+
+        series_list = fetch_series_list(data_api)
+        if dump and series_list:
+            dump_to_json(series_list, 'series_list.json')
+
+        cars_list = fetch_cars_list(data_api)
+        if dump and cars_list:
+            dump_to_json(cars_list, 'cars_list.json')
+
+        tracks_list = fetch_tracks_list(data_api)
+        if dump and tracks_list:
+            dump_to_json(tracks_list, 'tracks_list.json')
+
+        flairs_list = fetch_flairs_list(data_api)
+        if dump and flairs_list:
+            dump_to_json(flairs_list, 'flairs_list.json')
     except Exception as e:
         print(f"❌ Error during API calls: {e}")
 
@@ -156,8 +221,13 @@ def main():
         action="store_true",
         help="Loop every 3 minutes for 24 minutes (default: run once and exit)"
     )
+    parser.add_argument(
+        "--dump",
+        action="store_true",
+        help="Dump each endpoint's data to its own JSON file"
+    )
     args = parser.parse_args()
-    
+
     # Load configuration
     try:
         config = Config()
@@ -168,7 +238,7 @@ def main():
         print("2. Updated .env with your actual iRacing credentials")
         print("3. Registered your client with iRacing for Password Limited Grant")
         return
-    
+
     # Create and authenticate OAuth client
     try:
         oauth_client = IRacingOAuthClient(
@@ -181,14 +251,14 @@ def main():
             log_level=config.log_level,
             log_format=config.log_format
         )
-        
+
         print("Authenticating with iRacing...")
         if not oauth_client.authenticate(scope=config.scope):
             print("❌ Authentication failed!")
             return
-        
+
         print("✅ Authentication successful!")
-        
+
         # Display authentication status
         print("\n" + "="*50)
         print("AUTHENTICATION STATUS")
@@ -198,11 +268,11 @@ def main():
         if oauth_client.refresh_token_expires_at:
             print(f"   Refresh token expires at: {oauth_client.refresh_token_expires_at}")
         print(f"   Granted scope: {oauth_client.scope}")
-        
+
     except Exception as e:
         print(f"❌ Authentication error: {e}")
         return
-    
+
     # Create Data API client
     try:
         data_api = IRacingDataAPI(
@@ -213,7 +283,7 @@ def main():
     except Exception as e:
         print(f"❌ Failed to create Data API client: {e}")
         return
-    
+
     # Run API calls in a loop
     if args.loop:
         # Loop every 3 minutes for 24 minutes (9 iterations)
@@ -222,20 +292,20 @@ def main():
         interval_seconds = 3 * 60  # 3 minutes
         total_duration = 24 * 60  # 24 minutes
         iterations = (total_duration // interval_seconds) + 1  # +1 to include initial run
-        
+
         try:
             for i in range(iterations):
-                run_api_calls(data_api, iteration=i+1)
-                
+                run_api_calls(data_api, iteration=i+1, dump=args.dump)
+
                 # Sleep until next iteration (except for the last one)
                 if i < iterations - 1:
                     print(f"\n⏳ Waiting {interval_seconds // 60} minutes until next iteration...")
                     time.sleep(interval_seconds)
-            
+
             print(f"\n{'='*50}")
             print("ALL ITERATIONS COMPLETE")
             print(f"{'='*50}")
-            
+
         except KeyboardInterrupt:
             print("\n\n⚠️  Interrupted by user")
         except Exception as e:
@@ -245,7 +315,7 @@ def main():
         print("\n🔄 Running single iteration")
         print("   Use --loop flag to run every 3 minutes for 24 minutes")
         try:
-            run_api_calls(data_api, iteration=1)
+            run_api_calls(data_api, iteration=1, dump=args.dump)
             print(f"\n{'='*50}")
             print("SINGLE ITERATION COMPLETE")
             print(f"{'='*50}")
