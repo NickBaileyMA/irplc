@@ -20,7 +20,9 @@ def main():
         username=config.username,
         password=config.password,
         request_timeout=config.request_timeout,
-        token_refresh_buffer_seconds=config.token_refresh_buffer_seconds
+        token_refresh_buffer_seconds=config.token_refresh_buffer_seconds,
+        log_level=config.log_level,
+        log_format=config.log_format
     )
 
     # Authenticate

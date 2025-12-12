@@ -63,7 +63,9 @@ client = IRacingOAuthClient(
     username=config.username,
     password=config.password,
     request_timeout=config.request_timeout,
-    token_refresh_buffer_seconds=config.token_refresh_buffer_seconds
+    token_refresh_buffer_seconds=config.token_refresh_buffer_seconds,
+    log_level=config.log_level,
+    log_format=config.log_format
 )
 
 # Authenticate
@@ -80,13 +82,17 @@ This will authenticate and demonstrate various API calls.
 
 ```bash
 # Single iteration (for testing)
-cd examples
-python main.py
+python examples/main.py
+
+# With JSON dumps
+python examples/main.py --dump
 
 # Loop mode (requests every 3 minutes for 24 minutes)
 # This is intended to demonstrate token refresh.
-cd examples
-python main.py --loop
+python examples/main.py --loop
+
+# Basic authentication example
+python examples/basic_auth.py
 ```
 
 ## Configuration Options
