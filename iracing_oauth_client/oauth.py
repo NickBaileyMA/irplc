@@ -31,7 +31,8 @@ class IRacingOAuthClient:
 
     def __init__(self, client_id: str, client_secret: str, username: str, password: str,
                  request_timeout: int = 30, token_refresh_buffer_seconds: int = 60,
-                 log_level: str = "INFO", log_format: Literal["human", "json"] = "human"):
+                 log_level: str = "INFO", log_format: Literal["human", "json"] = "human",
+                 ir_env: str = "members"):
         """
         Initialize the iRacing OAuth client.
 
@@ -44,6 +45,7 @@ class IRacingOAuthClient:
             token_refresh_buffer_seconds: Buffer time before token expiry to trigger refresh (default: 60)
             log_level: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL) (default: "INFO")
             log_format: Logging format - "human" for readable format, "json" for JSON format (default: "human")
+            ir_env: iRacing environment (default: "members")
         """
         self.client_id = client_id
         self.client_secret = client_secret
@@ -51,6 +53,7 @@ class IRacingOAuthClient:
         self.password = password
         self.request_timeout = request_timeout
         self.token_refresh_buffer_seconds = token_refresh_buffer_seconds
+        self.ir_env = ir_env
 
         # Set up logging using shared utility
         self.logger = create_logger(
@@ -59,8 +62,11 @@ class IRacingOAuthClient:
             log_format
         )
 
-        # OAuth endpoints
-        self.token_url = "https://oauth.iracing.com/oauth2/token"
+        # OAuth endpoints - construct based on environment
+        if ir_env == "members":
+            self.token_url = "https://oauth.iracing.com/oauth2/token"
+        else:
+            self.token_url = f"https://{ir_env}-oauth.iracing.com/oauth2/token"
 
         # Token storage
         self.access_token: Optional[str] = None

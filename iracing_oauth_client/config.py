@@ -82,3 +82,8 @@ class Config:
             return 'json'
         else:
             return 'human'
+
+    @property
+    def ir_env(self) -> str:
+        """Get iRacing environment from environment variables."""
+        return os.getenv('IR_ENV', 'members')

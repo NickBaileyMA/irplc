@@ -34,7 +34,7 @@ class IRacingDataAPI:
             log_format: Logging format - "human" for readable format, "json" for JSON format (default: "human")
         """
         self.oauth_client = oauth_client
-        self.data_api_base = "https://members-ng.iracing.com/data"
+        self.data_api_base = f"https://{oauth_client.ir_env}-ng.iracing.com/data"
 
         # Set up logging using shared utility
         self.logger = create_logger(

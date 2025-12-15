@@ -65,7 +65,8 @@ client = IRacingOAuthClient(
     request_timeout=config.request_timeout,
     token_refresh_buffer_seconds=config.token_refresh_buffer_seconds,
     log_level=config.log_level,
-    log_format=config.log_format
+    log_format=config.log_format,
+    ir_env=config.ir_env
 )
 
 # Authenticate
@@ -108,6 +109,7 @@ PASSWORD=your_password
 
 # Optional
 SCOPE=iracing.auth
+IR_ENV=members
 REQUEST_TIMEOUT=30
 TOKEN_REFRESH_BUFFER_SECONDS=60
 LOG_LEVEL=INFO
