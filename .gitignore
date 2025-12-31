@@ -1,6 +1,9 @@
 # Environment variables - keep this file secure and never commit to version control
 .env
 
+# User configuration overrides - optional local settings
+iracing_oauth.ini
+
 # Python cache
 __pycache__/
 *.py[cod]

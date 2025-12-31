@@ -1,0 +1,18 @@
+# iRacing OAuth Client - User Configuration Overrides
+# Copy this file to iracing_oauth.ini to customize settings
+# Only include settings you want to override from defaults.ini
+# This file is optional - defaults.ini will be used if iracing_oauth.ini doesn't exist
+
+# Example: Override log level for debugging
+# Uncomment and modify as needed:
+
+# [logging]
+# level = DEBUG
+# format = json
+
+# Example: Override OAuth settings
+# [oauth]
+# request_timeout = 60
+# token_refresh_buffer_seconds = 120
+# scope = iracing.auth iracing.profile
+# environment = test

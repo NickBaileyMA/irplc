@@ -1,8 +1,8 @@
 include README.md
 include LICENSE
 include requirements.txt
-include .env.example
 recursive-include iracing_oauth_client *.py
+include iracing_oauth_client/defaults.ini
 recursive-include examples *.py
 recursive-exclude tests *
 recursive-exclude __pycache__ *
