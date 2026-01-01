@@ -28,7 +28,7 @@ pip install -e ".[dev]"
 The main part of the package provides:
 
 - **IRacingOAuthClient**: Handles OAuth authentication, token management, and refresh
-- **Config**: Manages configuration from environment variables
+- **Config**: Manages config in defaults.ini (base settings), iracing_oauth.ini (user overrides), and .env (credentials)
 - **logging_utils**: Shared logging utilities (JSONFormatter, logger creation)
 
 The examples directory shows how to integrate the OAuth client:
@@ -96,25 +96,60 @@ python examples/main.py --loop
 python examples/basic_auth.py
 ```
 
-## Configuration Options
+## Configuration
 
-Available environment variables in `.env`:
+The application uses a three-layer configuration system:
+
+### 1. `defaults.ini` - Default Settings
+
+Default operational settings for timeouts, logging, and OAuth parameters.
+
+**Available settings:**
+- `request_timeout`: Request timeout in seconds (default: 30)
+- `token_refresh_buffer_seconds`: Time before expiry to refresh token (default: 60)
+- `scope`: OAuth scope (default: iracing.auth)
+- `environment`: iRacing environment - `members` for production (default: members)
+- `level`: Log level - DEBUG, INFO, WARNING, ERROR, CRITICAL (default: INFO)
+- `format`: Log format - `human` (readable) or `json` (structured) (default: human)
+
+### 2. `iracing_oauth.ini` - User Overrides (optional)
+
+Optional file to override defaults. Only include settings you want to change:
 
 ```ini
-# Required
-CLIENT_ID=your_client_id
-CLIENT_SECRET=your_client_secret
-USERNAME=your_username@example.com
-PASSWORD=your_password
+# Example: Enable debug logging
+[logging]
+level = DEBUG
 
-# Optional
-SCOPE=iracing.auth
-IR_ENV=members
-REQUEST_TIMEOUT=30
-TOKEN_REFRESH_BUFFER_SECONDS=60
-LOG_LEVEL=INFO
-LOG_FORMAT=human
+# Example: Use multiple OAuth scopes
+[oauth]
+scope = iracing.auth iracing.profile
+
+# Example: Increase timeout
+[oauth]
+request_timeout = 60
 ```
+
+This file should be created in your project's working directory and is gitignored by default.
+
+### 3. `.env` - Credentials
+
+***Sensitive credentials that should never be committed to version control:***
+
+```ini
+# Required credentials
+IR_CLIENT_ID=your_client_id
+IR_CLIENT_SECRET=your_client_secret
+IR_USERNAME=your_username@example.com
+IR_PASSWORD=your_password
+```
+
+**Setup:**
+1. Create `.env` in your project directory with the required credentials above
+2. (Optional) Create `iracing_oauth.ini` to customize operational settings
+3. ***Never commit `.env` to version control***
+
+**Note:** Example files (`.env.example` and `iracing_oauth.ini.example`) are available in the [GitHub repository](https://github.com/NickBaileyMA/irplc) for reference.
 
 ## Important Notes
 

@@ -44,3 +44,6 @@ Issues = "https://github.com/NickBaileyMA/irplc/issues"
 
 [tool.setuptools]
 packages = ["iracing_oauth_client"]
+
+[tool.setuptools.package-data]
+iracing_oauth_client = ["defaults.ini"]
