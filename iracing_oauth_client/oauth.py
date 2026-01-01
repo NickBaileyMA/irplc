@@ -10,7 +10,7 @@ import hashlib
 import json
 import logging
 import urllib.parse
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, Optional, Any, Literal
 
 import requests
@@ -218,11 +218,11 @@ class IRacingOAuthClient:
                 self.logger.error("Authentication failed: 'expires_in' missing from token response")
                 return False
 
-            self.token_expires_at = datetime.now() + timedelta(seconds=expires_in)
+            self.token_expires_at = datetime.now(timezone.utc) + timedelta(seconds=expires_in)
 
             refresh_expires_in = response_data.get('refresh_token_expires_in')
             if refresh_expires_in:
-                self.refresh_token_expires_at = datetime.now() + timedelta(seconds=refresh_expires_in)
+                self.refresh_token_expires_at = datetime.now(timezone.utc) + timedelta(seconds=refresh_expires_in)
 
             self.logger.info("Authentication successful! Token expires at: %s", self.token_expires_at)
             return True
@@ -242,7 +242,7 @@ class IRacingOAuthClient:
             self.logger.warning("No refresh token available")
             return False
 
-        if self.refresh_token_expires_at and datetime.now() >= self.refresh_token_expires_at:
+        if self.refresh_token_expires_at and datetime.now(timezone.utc) >= self.refresh_token_expires_at:
             self.logger.warning("Refresh token has expired, need to re-authenticate")
             return False
 
@@ -284,11 +284,11 @@ class IRacingOAuthClient:
                 self.logger.error("Token refresh failed: 'expires_in' missing from token response")
                 return False
 
-            self.token_expires_at = datetime.now() + timedelta(seconds=expires_in)
+            self.token_expires_at = datetime.now(timezone.utc) + timedelta(seconds=expires_in)
 
             refresh_expires_in = response_data.get('refresh_token_expires_in')
             if refresh_expires_in:
-                self.refresh_token_expires_at = datetime.now() + timedelta(seconds=refresh_expires_in)
+                self.refresh_token_expires_at = datetime.now(timezone.utc) + timedelta(seconds=refresh_expires_in)
 
             self.logger.info("Token refreshed successfully! New token expires at: %s", self.token_expires_at)
             return True
@@ -310,7 +310,8 @@ class IRacingOAuthClient:
 
         # Check if token is expired or will expire soon
         if self.token_expires_at:
-            time_until_expiry = self.token_expires_at - datetime.now()
+            now = datetime.now(timezone.utc)
+            time_until_expiry = self.token_expires_at - now
             if time_until_expiry.total_seconds() < self.token_refresh_buffer_seconds:
                 self.logger.info("Token expired or expiring soon, attempting refresh...")
                 return self.refresh_access_token()
